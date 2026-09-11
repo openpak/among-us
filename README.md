@@ -13,7 +13,7 @@ every other OpenPak title is.
 So the whole of OpenPak's contribution here is a redirect, a TLS front, and about a hundred lines
 of Go. See [`docs/design.md`](docs/design.md) for the reasoning and the sources.
 
-**Status: deployed 2026-09-11, unproven on a console.** Impostor (`ghcr.io/openpak/impostor`, our unmodified build) and this front run on production; Traefik terminates `matchmaker.among.us`, `matchmaker-eu.among.us` and `matchmaker-as.among.us` with an OpenPak-CA leaf and `openpak.nro` 0.2.2 redirects them. Game traffic: UDP 22603. Nothing has been tested against the game yet. The design rests on assumptions
+**Status: deployed 2026-09-11, unproven on a console.** one container (`ghcr.io/openpak/among-us`: Impostor built from our fork plus this front) runs on production; Traefik terminates `matchmaker.among.us`, `matchmaker-eu.among.us` and `matchmaker-as.among.us` with an OpenPak-CA leaf and `openpak.nro` 0.2.2 redirects them. Game traffic: UDP 22603. Nothing has been tested against the game yet. The design rests on assumptions
 about the Switch build that only a capture can settle;
 [`docs/evidence-needed.md`](docs/evidence-needed.md) lists them in the order that matters, and
 two of them can kill the approach outright.
@@ -22,7 +22,7 @@ two of them can kill the approach outright.
 
 | Piece | What it is |
 | --- | --- |
-| Impostor | Upstream container image, unmodified, its own process. Not vendored here — GPL-3.0 stays at arm's length from AGPL-3.0-only OpenPak. |
+| Impostor | Built into this image at build time from OpenPak's unmodified fork (`openpak/impostor`, `IMPOSTOR_REF` build arg, default `openpak-v1.10.8`), run as its own process next to the front. Not vendored here — GPL-3.0 stays at arm's length from AGPL-3.0-only OpenPak; sharing a container is aggregation. |
 | `cmd/among-us` | This repository. `/healthz`, a reverse proxy to Impostor, and a log of the paths the console asks for. |
 | Traefik + DNS | Existing OpenPak plumbing: the console resolves the matchmaker name to us and trusts our CA. |
 
