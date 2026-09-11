@@ -13,7 +13,7 @@ every other OpenPak title is.
 So the whole of OpenPak's contribution here is a redirect, a TLS front, and about a hundred lines
 of Go. See [`docs/design.md`](docs/design.md) for the reasoning and the sources.
 
-**Status: unproven.** Nothing has been tested against the game. The design rests on assumptions
+**Status: deployed 2026-09-11, unproven on a console.** Impostor (`ghcr.io/openpak/impostor`, our unmodified build) and this front run on production; Traefik terminates `matchmaker.among.us`, `matchmaker-eu.among.us` and `matchmaker-as.among.us` with an OpenPak-CA leaf and `openpak.nro` 0.2.2 redirects them. Game traffic: UDP 22603. Nothing has been tested against the game yet. The design rests on assumptions
 about the Switch build that only a capture can settle;
 [`docs/evidence-needed.md`](docs/evidence-needed.md) lists them in the order that matters, and
 two of them can kill the approach outright.
