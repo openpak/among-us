@@ -16,7 +16,9 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS impostor
 ARG TARGETARCH IMPOSTOR_REF
 RUN apt-get update -qq && apt-get install -y -qq git >/dev/null
 WORKDIR /source
-RUN git clone -q --depth 1 -b "$IMPOSTOR_REF" https://github.com/openpak/impostor.git .
+# openpak/impostor is private: the build passes a netrc secret (never stored in a layer).
+RUN --mount=type=secret,id=netrc,target=/root/.netrc \
+    git clone -q --depth 1 -b "$IMPOSTOR_REF" https://github.com/openpak/impostor.git .
 RUN case "$TARGETARCH" in amd64) P=linux-x64;; arm64) P=linux-arm64;; *) echo "unsupported $TARGETARCH"; exit 1;; esac \
  && dotnet publish -c release -o /app -r "$P" -p:VersionSuffix=openpak ./src/Impostor.Server/Impostor.Server.csproj
 

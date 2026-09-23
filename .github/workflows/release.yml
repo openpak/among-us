@@ -29,10 +29,14 @@ jobs:
           IMG="ghcr.io/${{ github.repository }}"
           case "${GITHUB_REF_NAME}" in v*) VER="${GITHUB_REF_NAME#v}";; *) VER="";; esac
           podman manifest rm "$IMG:build" 2>/dev/null || true
-          podman build --platform linux/amd64,linux/arm64 --build-arg IMPOSTOR_REF="${{ vars.IMPOSTOR_REF || 'openpak-v1.10.8' }}" --manifest "$IMG:build" .
+          NETRC="${{ runner.temp }}/netrc"; umask 077
+          printf 'machine github.com login x-access-token password %s\n' "$MODULE_TOKEN" > "$NETRC"
+          podman build --secret id=netrc,src="$NETRC" --platform linux/amd64,linux/arm64 --build-arg IMPOSTOR_REF="${{ vars.IMPOSTOR_REF || 'openpak-v1.10.8' }}" --manifest "$IMG:build" .
           TAGS="latest"; [ -n "$VER" ] && TAGS="$TAGS $VER $(echo "$VER" | cut -d. -f1,2)"
           for t in $TAGS; do podman manifest push --all "$IMG:build" "docker://$IMG:$t"; done
           podman manifest rm "$IMG:build"
+          rm -f "$NETRC"
           echo "pushed $IMG: $TAGS"
         env:
           REGISTRY_AUTH_FILE: ${{ runner.temp }}/auth.json
+          MODULE_TOKEN: ${{ secrets.OPENPAK_MODULE_TOKEN }}
