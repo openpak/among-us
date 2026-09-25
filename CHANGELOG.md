@@ -3,8 +3,9 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
-## Unreleased
+## v0.2.1 — 2026-09-25
 
+- First tagged build since the build moved to the self-hosted runner and the private Impostor fork (openpak-v1.10.8) is cloned through a netrc build secret; game code unchanged since v0.2.0
 - ci: release builds on the self-hosted runner with podman; builds only on `v*.*.*` tags;
   build scratch in the runner temp [4c0854b, 07f4bf0, 51169ea]
 - build: the private impostor fork is cloned through a netrc build secret
