@@ -31,11 +31,11 @@ go run ./cmd/among-us   # :22600, proxying to http://127.0.0.1:22601
 ```
 
 `AMONG_US_HTTP_ADDR` and `AMONG_US_IMPOSTOR_URL` override those defaults. Ports 22600–22609 are
-claimed in [`ports.md`](../../ports.md).
+claimed in [`ports.md`](https://github.com/openpak/docs/blob/main/ports.md).
 
 ## Ground rules
 
-- Clean room. Read [`docs/clean-room-policy.md`](../../docs/clean-room-policy.md) before writing
+- Clean room. Read [`docs/clean-room-policy.md`](https://github.com/openpak/docs/blob/main/clean-room-policy.md) before writing
   a line. Public protocol documentation, our own captures, and compatibly licensed code are the
   only inputs.
 - AGPL-3.0-only, English only, Go 1.25, no secrets in the repository.
