@@ -3,6 +3,14 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.2.2 — 2026-10-10
+
+- The log carries no personal data: request paths keep their shape but any segment that is not a
+  plain route word (a game code, an id, a name) is logged as a `~xxxxxx` tag, proxy and server
+  errors lose the addresses and URLs they spell out, and the client address never reaches a line.
+  Behaviour is unchanged. `TestLogsCarryNoPersonalData` drives the front with a sentinel game code,
+  token, query, name and address and fails if any reaches the log.
+
 ## v0.2.1 — 2026-09-25
 
 - First tagged build since the build moved to the self-hosted runner and the private Impostor fork (openpak-v1.10.8) is cloned through a netrc build secret; game code unchanged since v0.2.0
