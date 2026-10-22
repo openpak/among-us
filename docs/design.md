@@ -1,6 +1,6 @@
 # Design: Among Us on Nintendo Switch
 
-Written 2026-09-09 from public sources only. No earlier tree was opened; see
+Written 2026-09-09 from public sources only. No source from a non-free implementation was opened; see
 [`clean-room-policy.md`](https://github.com/openpak/docs/blob/main/clean-room-policy.md).
 
 **Recommendation: depend. Do not build a game server.** Run
