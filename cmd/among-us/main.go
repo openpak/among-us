@@ -52,15 +52,36 @@ func env(key, fallback string) string {
 }
 
 // front is the front's whole routing: /healthz, and everything else logged by shape and proxied.
-func front(proxy http.Handler) *http.ServeMux {
+// A non-nil rt (federation on) may answer a create or a join itself with a node's address; it
+// proxies everything it does not answer, so a nil rt or a table without nodes is the plain proxy.
+func front(proxy http.Handler, rt *router) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok\n"))
 	})
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s %s %s", classify(r.URL.Path), r.Method, redact.Path(r.URL.Path))
+		if rt != nil {
+			switch {
+			case r.Method == http.MethodPut && r.URL.Path == "/api/games":
+				if rt.create(w, r) {
+					return
+				}
+			case r.Method == http.MethodPost && r.URL.Path == "/api/games":
+				if rt.join(w, r, true) {
+					return
+				}
+			case r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/api/games/"):
+				if rt.join(w, r, false) {
+					return
+				}
+			}
+		}
 		proxy.ServeHTTP(w, r)
 	})
+	if rt != nil && rt.reportKey != "" {
+		mux.HandleFunc(PathRooms, rt.report)
+	}
 
 	return mux
 }
@@ -86,7 +107,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("AMONG_US_IMPOSTOR_URL %q is not a URL: %v", target, err)
 	}
-	mux := front(newProxy(impostor))
+	mux := front(newProxy(impostor), routerFromEnv())
 
 	log.Printf("among-us front on %s, proxying to %s", addr, impostor)
 	// ponytail: bare http.Server, no timeouts, no graceful shutdown. This

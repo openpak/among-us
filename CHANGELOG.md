@@ -3,6 +3,13 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## Unreleased
+
+- Region nodes: with `OPENPAK_ROUTING_URL` set, a host's `PUT /api/games` gets the Impostor of the
+  node for the region hostname they picked, and a join by a code a node reported
+  (`POST /internal/v1/amongus/rooms`, `AMONG_US_ROOM_REPORT_KEY`) gets that node. Unset URL or no
+  nodes: unchanged.
+
 ## v0.2.2 — 2026-10-10
 
 - The log carries no personal data: request paths keep their shape but any segment that is not a

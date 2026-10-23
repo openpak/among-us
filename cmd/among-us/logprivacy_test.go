@@ -49,14 +49,14 @@ func TestLogsCarryNoPersonalData(t *testing.T) {
 	upstream := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "{}") }))
 	defer upstream.Close()
 	uURL, _ := url.Parse(upstream.URL)
-	live := httptest.NewServer(front(newProxy(uURL)))
+	live := httptest.NewServer(front(newProxy(uURL), nil))
 	defer live.Close()
 
 	// A second front whose upstream is dead, so the proxy error path logs.
 	deadSrv := httptest.NewServer(http.NotFoundHandler())
 	deadURL, _ := url.Parse(deadSrv.URL)
 	deadSrv.Close()
-	dead := httptest.NewServer(front(newProxy(deadURL)))
+	dead := httptest.NewServer(front(newProxy(deadURL), nil))
 	defer dead.Close()
 
 	for _, base := range []string{live.URL, dead.URL} {
