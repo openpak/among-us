@@ -2,7 +2,7 @@
 // that has been redirected to Innersloth's matchmaker hostname.
 //
 // It does two things. It answers /healthz, because that is how the fleet asks
-// whether a service is up (../../ports.md). And it reverse-proxies everything
+// whether a service is up (the port plan, https://docs.openpak.org/contributors/ports/). And it reverse-proxies everything
 // else to Impostor while logging the request paths, because nobody has yet seen
 // what the Switch build of Among Us asks a matchmaker for; that log is the
 // evidence docs/evidence-needed.md is after.

@@ -9,7 +9,7 @@
 > current handoff for builds and testing; old results do not establish Harbor parity.
 
 Written 2026-09-09 from public sources only. No source from a non-free implementation was opened; see
-[`clean-room-policy.md`](https://github.com/openpak/docs/blob/main/clean-room-policy.md).
+[`clean-room-policy.md`](https://docs.openpak.org/contributors/clean-room/).
 
 **Recommendation: depend. Do not build a game server.** Run
 [Impostor](https://github.com/Impostor/Impostor) (GPL-3.0, C#/.NET 8) as a separate process and
@@ -21,7 +21,7 @@ is roughly 100 lines of Go plus deployment config.
 
 Among Us does not use NEX, NPLN, or any Nintendo online service for gameplay. It talks to
 Innersloth's own servers with its own protocol on every platform, so the Switch build is a
-third-party-network title in the sense of [`ports.md`](https://github.com/openpak/docs/blob/main/ports.md), like Outbound's Photon
+third-party-network title in the sense of [`ports.md`](https://docs.openpak.org/contributors/ports/), like Outbound's Photon
 or Fall Guys.
 
 The modern flow, as implemented by Impostor's HTTP server (public GPL-3.0 source, read for
@@ -117,7 +117,7 @@ then, in the front, where the request already passes through.
 
 ## 4. Ports
 
-Claimed in [`ports.md`](https://github.com/openpak/docs/blob/main/ports.md): **22600–22609**.
+Claimed in [`ports.md`](https://docs.openpak.org/contributors/ports/): **22600–22609**.
 
 | Port | Use |
 | --- | --- |

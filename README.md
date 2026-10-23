@@ -64,11 +64,11 @@ whether the Switch client accepts a returned `Ip`/`Port` that is not the matchma
 
 With `OPENPAK_ROUTING_URL` unset, or with no node in the table, the front behaves exactly as
 before (`TestHomeOnlyIsUnchanged`). Ports 22600–22609 are
-claimed in [`ports.md`](https://github.com/openpak/docs/blob/main/ports.md).
+claimed in [`ports.md`](https://docs.openpak.org/contributors/ports/).
 
 ## Ground rules
 
-- Clean room. Read [`docs/clean-room-policy.md`](https://github.com/openpak/docs/blob/main/clean-room-policy.md) before writing
+- Clean room. Read [clean-room policy](https://docs.openpak.org/contributors/clean-room/) before writing
   a line. Public protocol documentation, our own captures, and compatibly licensed code are the
   only inputs.
 - AGPL-3.0-only, English only, Go 1.25, no secrets in the repository.
