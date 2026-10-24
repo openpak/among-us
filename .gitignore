@@ -49,3 +49,7 @@ shared-docs
 
 # Compiled binary
 /among-us
+
+# Hazel checkout for local dtls-front builds (the image clones it)
+/.hazel
+obj/

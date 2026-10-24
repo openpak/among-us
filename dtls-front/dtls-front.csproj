@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The DTLS front for Impostor. Hazel (MIT, github.com/willardf/Hazel-Networking) is compiled in
+       from a checkout at $(HazelSrc), pinned in the Dockerfile; it is not vendored here. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>dtls-front</AssemblyName>
+    <RootNamespace>OpenPak.AmongUs.DtlsFront</RootNamespace>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <NoWarn>$(NoWarn);CS0618;CS0162;CS0168;CS0219;CS0649;CS0414;CS8981;SYSLIB0026;SYSLIB0027;SYSLIB0028</NoWarn>
+    <HazelSrc Condition="'$(HazelSrc)' == ''">$(MSBuildProjectDirectory)/../.hazel</HazelSrc>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(HazelSrc)/Hazel/**/*.cs" Exclude="$(HazelSrc)/Hazel/obj/**;$(HazelSrc)/Hazel/bin/**;$(HazelSrc)/Hazel/Properties/**" />
+  </ItemGroup>
+</Project>
