@@ -1,5 +1,11 @@
 # Among Us DTLS trust patch
 
+> **Test-only build. Do not ship it.** The patch in this directory accepts *any* server
+> certificate. The owner requires the released patch to accept only OpenPak's fixed DTLS
+> certificate (2026-10-24). No patcher or Harbor built-in may carry this version. Release plan:
+> replace the NOP with a check against OpenPak's certificate (an embedded key hash compared in the
+> same branch, or a swap of the pinned-set entry), then regenerate per build.
+
 ## The Among Us exception to "no game patches"
 
 OpenPak does not patch games. It changes where the console connects and puts its CA in the
@@ -17,9 +23,10 @@ nor the console certificate store is consulted.
 What the patch changes: one instruction. The branch that rejects a certificate the pinned set
 does not contain becomes a NOP. Everything else stays as shipped. The handshake still verifies
 the ServerKeyExchange signature against the certificate the server sent, and the session is
-still encrypted (ECDHE X25519, AES-128-GCM). The pinned set is no longer consulted, so the client
-accepts any server certificate. In practice the server is the one DNS and the signed ceiling
-already pointed it at. The game server side is `dtls-front/`.
+still encrypted (ECDHE X25519, AES-128-GCM). The pinned set is no longer consulted, so this
+test build accepts any server certificate; the release build must accept only OpenPak's (above).
+The game server side is `dtls-front/`. It serves OpenPak's fixed DTLS certificate, kept on the
+box (`AMONG_US_DTLS_CERT` / `AMONG_US_DTLS_KEY`); the private key never leaves the box.
 
 | Build | What | Site |
 |---|---|---|
@@ -40,8 +47,8 @@ The file name is the build id. The loader picks the file that matches.
 | Switch (Atmosphere) | `sd:/atmosphere/exefs_patches/openpak_among_us_dtls/<build id>.ips` |
 | Harbor (Eden-based) | `<user>/load/0100B0C013912000/openpak-among-us-dtls/exefs/<build id>.ips` |
 
-Delivery to players goes the same way as D2R's: the OpenPak Switch Patcher and Harbor's
-built-in patches. Neither carries it yet.
+Delivery to players will go the same way as D2R's (the OpenPak Switch Patcher and Harbor's
+built-in patches), and only with the pinned release build. Neither carries anything yet.
 
 Other consoles: the PlayStation and Xbox builds embed the same Hazel DTLS client and would need
 the equivalent change in their own executable format. OpenPak has no PS4/PS5 or Xbox One/Series

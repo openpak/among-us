@@ -6,9 +6,12 @@
 // data, then copies every message both ways with its send option, unchanged. Disconnects (and
 // their reason payload) pass through.
 //
-// The server certificate is generated at start. The console only accepts it with the OpenPak
-// DTLS trust patch (tools/dtls-trust), which drops the client's pinned-certificate check.
+// The server certificate is OpenPak's fixed DTLS certificate (AMONG_US_DTLS_CERT and
+// AMONG_US_DTLS_KEY, PEM files on the box). The console accepts it with the OpenPak DTLS trust
+// patch (tools/dtls-trust). With neither set, a throwaway certificate is generated for local tests.
 //
+//   AMONG_US_DTLS_CERT      PEM certificate (default unset)
+//   AMONG_US_DTLS_KEY       PEM private key, RSA (default unset)
 //   AMONG_US_DTLS_ADDR      listen address (default 0.0.0.0:22606)
 //   AMONG_US_DTLS_UPSTREAM  Impostor's game endpoint (default 127.0.0.1:22603)
 
@@ -194,7 +197,21 @@ namespace OpenPak.AmongUs.DtlsFront
             IPEndPoint upstream = Parse(Environment.GetEnvironmentVariable("AMONG_US_DTLS_UPSTREAM"), "127.0.0.1:22603");
 
             var listener = new RelayListener(listen, upstream, new ConsoleLogger());
-            listener.SetCertificate(MakeCertificate());
+            string certPath = Environment.GetEnvironmentVariable("AMONG_US_DTLS_CERT");
+            string keyPath = Environment.GetEnvironmentVariable("AMONG_US_DTLS_KEY");
+            X509Certificate2 cert;
+            if (!string.IsNullOrEmpty(certPath))
+            {
+                using X509Certificate2 pem = X509Certificate2.CreateFromPemFile(certPath, keyPath);
+                cert = new X509Certificate2(pem.Export(X509ContentType.Pkcs12), (string)null, X509KeyStorageFlags.Exportable);
+                Console.WriteLine($"[dtls] certificate {cert.GetCertHashString(HashAlgorithmName.SHA256)}");
+            }
+            else
+            {
+                cert = MakeCertificate();
+                Console.WriteLine("[dtls] warn: no AMONG_US_DTLS_CERT, using a throwaway certificate (tests only)");
+            }
+            listener.SetCertificate(cert);
             listener.Start();
             Console.WriteLine($"[dtls] listening on {listen}, relaying to {upstream}");
 
