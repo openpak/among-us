@@ -67,6 +67,14 @@ Rules that hold for every platform:
   so a player keeps one friend code everywhere. When a second platform arrives, it maps to the
   same OpenPak account and therefore to the same PUID, which is what makes cross-platform
   friends work.
+- Purchases have one seam too, in eosd's `user/validate-receipt[-batch]`: a receipt that is a
+  console's own item list (Switch on-disk DLC, `entitlement_type` `dlc` or `innersloth-receipt`)
+  is accepted as sent, because the console checked ownership itself; a receipt that only the
+  real store can verify (Apple/Google, Microsoft Store XSTS, Epic Games Store) is refused with 403.
+  A new console platform whose receipts are console-checked lists needs no change there.
+- Game version: the Switch 2026.18.0 build reports `2026.7.15` revision 0 (build 7239), which
+  Impostor `openpak-v1.10.8` already lists in its 18.0 compatibility group with PC and mobile,
+  so Switch rooms and PC/mobile rooms of the same release are one pool.
 - The matchmaker can name the account behind a request: the `Puid` in `/api/user` is eosd's. A
   lookup from PUID to account (for country refinement and test nodes, below) belongs in eosd,
   next to the derivation, not in this front.
