@@ -189,6 +189,7 @@ namespace OpenPak.AmongUs.DtlsFront
         private static int Main(string[] args)
         {
             if (args.Length > 0 && args[0] == "--selftest") return SelfTest.Run();
+            if (args.Length > 1 && args[0] == "--probe") return SelfTest.Probe(IPEndPoint.Parse(args[1]));
             IPEndPoint listen = Parse(Environment.GetEnvironmentVariable("AMONG_US_DTLS_ADDR"), "0.0.0.0:22606");
             IPEndPoint upstream = Parse(Environment.GetEnvironmentVariable("AMONG_US_DTLS_UPSTREAM"), "127.0.0.1:22603");
 

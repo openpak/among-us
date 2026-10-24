@@ -59,5 +59,27 @@ namespace OpenPak.AmongUs.DtlsFront
             Console.WriteLine(ok ? "[selftest] PASS" : "[selftest] FAIL");
             return ok ? 0 : 1;
         }
+    
+        // `dtls-front --probe host:port`: is a DTLS front answering there? A stock Hazel client with no
+        // pinned certificate gets as far as the server's Certificate message and rejects it, which is
+        // the proof: "Certificate not authentic" in the output means the handshake reached the front.
+        public static int Probe(IPEndPoint target)
+        {
+            var log = new ProbeLogger();
+            using var client = new DtlsUnityConnection(log, target);
+            client.SetValidServerCertificates(new X509Certificate2Collection());
+            try { client.Connect(null, 4000); } catch (Exception) { }
+            Console.WriteLine(log.SawCertificate ? "[probe] PASS: the front sent its certificate" : "[probe] FAIL: no certificate from the front");
+            return log.SawCertificate ? 0 : 1;
+        }
+
+        private sealed class ProbeLogger : ILogger
+        {
+            public bool SawCertificate;
+            public void WriteVerbose(string msg) { }
+            public void WriteWarning(string msg) { }
+            public void WriteInfo(string msg) { }
+            public void WriteError(string msg) { if (msg.Contains("Certificate not authentic")) this.SawCertificate = true; }
+        }
     }
 }
