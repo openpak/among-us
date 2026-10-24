@@ -54,6 +54,8 @@ namespace OpenPak.AmongUs.DtlsFront
         private readonly object gate = new object();
         private System.Collections.Generic.List<(byte[], SendOption)> pending = new System.Collections.Generic.List<(byte[], SendOption)>();
         private int closed;
+        private long up, down;
+        private readonly long opened = Environment.TickCount64;
 
         public Session(Connection client, IPEndPoint impostor, byte[] handshake, ILogger logger, Action onClose)
         {
@@ -93,6 +95,8 @@ namespace OpenPak.AmongUs.DtlsFront
         {
             try
             {
+                if (toImpostor) System.Threading.Interlocked.Increment(ref this.up);
+                else System.Threading.Interlocked.Increment(ref this.down);
                 byte[] bytes = new byte[e.Message.Length];
                 Buffer.BlockCopy(e.Message.Buffer, e.Message.Offset, bytes, 0, bytes.Length);
                 if (toImpostor)
@@ -132,6 +136,8 @@ namespace OpenPak.AmongUs.DtlsFront
         private bool Close(Connection other, DisconnectedEventArgs e)
         {
             if (System.Threading.Interlocked.Exchange(ref this.closed, 1) == 1) return false;
+            Console.WriteLine($"[dtls] session end: {(other == this.upstream ? "console" : "Impostor")} closed after " +
+                $"{(Environment.TickCount64 - this.opened) / 1000.0:F1}s, {this.up} messages up, {this.down} down");
             MessageWriter w = null;
             if (e.Message != null && e.Message.Length > 0)
             {
