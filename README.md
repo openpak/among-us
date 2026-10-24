@@ -53,11 +53,20 @@ client sends its platform record: a tag (Impostor's `Platforms`), a display name
 
 | Platform | Platform tag | Connect credential (`external_auth_type`) | Redirect on OpenPak | Status |
 | --- | --- | --- | --- | --- |
-| Switch | `Switch` (8) | `nintendo_nsa_id_token`, measured; OpenPak mints the NSA id_token (nx-baas) and eosd verifies it | DNS + CA via the signed ceiling: `.among.us`, `.epicgames.dev`, `.innersloth.com` (all in it) | Being brought up in Harbor; console unverified |
+| Switch | `Switch` (8) | `nintendo_nsa_id_token`, measured; OpenPak mints the NSA id_token (nx-baas) and eosd verifies it | DNS + CA via the signed ceiling: `.among.us`, `.epicgames.dev`, `.innersloth.com` (all in it) | Harbor 2026-10-24: sign-in, account backend and matchmaker work; the game connection stops at DTLS (below) |
 | PlayStation 4/5 | `Playstation` (10), PSN account id | `psn_id_token` (EOS SDK naming; not measured) | none: OpenPak has no PS4/PS5 network (PS3 only) | Blocked on a PS4/PS5 redirect; needs an OpenPak PSN identity that mints the id_token, then one eosd case |
 | Xbox One/Series | `Xbox` (9), XUID | `xbl_xsts_token` (EOS SDK naming; not measured) | none: OpenPak's Xbox work covers the original Xbox and the 360 | Blocked on an Xbox One/Series redirect; needs an XSTS issuer, then one eosd case |
 | PC (Steam, Epic, Microsoft Store, itch.io) | `StandaloneSteamPC` (2), `StandaloneEpicPC` (1), `StandaloneWin10` (4), `StandaloneItch` (5); `StandaloneMac` (3) | Steam ticket, Epic id token, Xbox (Microsoft Store) or device id | not redirected. A PC client given an Impostor region file still signs in to Innersloth's real EOS and backend, and could reach this matchmaker only if it were published under an OpenPak hostname (it is not today) | Out of scope to redirect; same protocol, so useful as a test client |
 | Mobile | `IPhone` (6), `Android` (7) | Apple / Google id token or device id | not redirected (same as PC) | Out of scope to redirect |
+
+**Blocker (2026-10-24): the game server connection is DTLS with a pinned certificate.** After the
+matchmaker names the server, every online path of the console client opens a Hazel DTLS 1.2
+session (game port + 3, or an auth handshake on port + 2), and it accepts only one compiled-in,
+self-signed server certificate. No server without that certificate's private key can complete
+the handshake, and DNS, the console CA store or the signed ceiling cannot change it. Going further
+needs a console-side change to the client's certificate check plus a DTLS front for Impostor;
+that is an owner decision under the no-game-patches rule. The same client code ships on the
+other consoles.
 
 Rules that hold for every platform:
 
