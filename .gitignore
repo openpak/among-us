@@ -57,3 +57,4 @@ shared-docs
 # Hazel checkout for local dtls-front builds (the image clones it)
 /.hazel
 obj/
+next-session.md
