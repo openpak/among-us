@@ -1,6 +1,6 @@
 # Evidence: among-us
 
-**Blocker (2026-10-24): the game server connection is DTLS with a pinned certificate.** After the
+**Blocker: the game server connection is DTLS with a pinned certificate.** After the
 matchmaker names the server, every online path of the console client opens a Hazel DTLS 1.2
 session (game port + 3, or an auth handshake on port + 2), and it accepts only one compiled-in,
 self-signed server certificate. No server without that certificate's private key can complete
