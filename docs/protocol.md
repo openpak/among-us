@@ -68,3 +68,12 @@ UDP), so a node reports its rooms to `POST /internal/v1/amongus/rooms` with head
 $AMONG_US_ROOM_REPORT_KEY` and body `{"node":"<id>","code":<int>,"game":{<its own
 /api/games/{code} Game>},"closed":false}`. Reports live in memory for 6 h (re-report to keep a
 room). The endpoint exists only when `AMONG_US_ROOM_REPORT_KEY` is set.
+
+## Game connection: DTLS with a pinned certificate
+
+After the matchmaker names the server, every online path of the console client opens a Hazel
+DTLS 1.2 session (game port + 3, or an auth handshake on port + 2), and it accepts only one
+compiled-in, self-signed server certificate. No server without that certificate's private key
+completes the handshake, and DNS, the console CA store or the signed ceiling cannot change it.
+Going further needs a console-side change to the client's certificate check plus a DTLS front
+for Impostor (`dtls-front`, `tools/dtls-trust`). The same client code ships on the other consoles.

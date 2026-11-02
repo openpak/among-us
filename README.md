@@ -32,12 +32,12 @@ go run ./cmd/among-us   # :22600, proxying to http://127.0.0.1:22601
 ## Docs
 
 - [Protocol](docs/protocol.md)
-- [Evidence](docs/evidence.md)
 - [Deploy](docs/deploy.md)
-- [Notes](docs/notes.md)
 - [Design](docs/design.md)
 - [Evidence needed](docs/evidence-needed.md)
 - [Provenance](docs/provenance.md)
+
+PRDs: openpak/prds (private)
 
 Live compatibility status: [openpak.org/titles#t-19](https://openpak.org/titles#t-19).
 
