@@ -3,7 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
-## Unreleased
+## v0.3.0 — 2026-11-02
+
+- Release from main; replaces the hand-built production image.
+
 
 - Region nodes: with `OPENPAK_ROUTING_URL` set, a host's `PUT /api/games` gets the Impostor of the
   node for the region hostname they picked, and a join by a code a node reported
