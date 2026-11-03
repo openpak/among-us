@@ -4,7 +4,7 @@
 
 | Piece | What it is |
 | --- | --- |
-| Impostor | Built into this image at build time from OpenPak's fork (`openpak/impostor`, `IMPOSTOR_REF` build arg, default `openpak-v1.10.10`), run as its own process next to the front. Not vendored here — GPL-3.0 stays at arm's length from AGPL-3.0-only OpenPak; sharing a container is aggregation. |
+| Impostor | Built into this image at build time from OpenPak's fork (`openpak/impostor`, `IMPOSTOR_REF` build arg, default `openpak-v1.10.11`), run as its own process next to the front. Not vendored here — GPL-3.0 stays at arm's length from AGPL-3.0-only OpenPak; sharing a container is aggregation. |
 | `cmd/among-us` | This repository. `/healthz`, a reverse proxy to Impostor, and a log of the paths the console asks for. |
 | Traefik + DNS | Existing OpenPak plumbing: the console resolves the matchmaker name to us and trusts our CA. |
 

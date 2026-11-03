@@ -3,6 +3,12 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.5.1 — 2026-11-03
+
+- Impostor `openpak-v1.10.11`: one log line per HTTP request (`http <method> <path> -> <status> <ms>ms`) and
+  per Hazel message (`cmd <Message> -> ok|error <ms>ms`), plus connect and disconnect lines. No query,
+  headers, bodies, nicknames or message bytes; the per-packet game-data relay is not logged.
+
 ## v0.5.0 — 2026-11-03
 - Per-request logging: one slog line per HTTP request (method, path, status, ms) on stderr via internal/httplog. Query strings, headers and bodies are never logged; /healthz and /metrics are skipped.
 
