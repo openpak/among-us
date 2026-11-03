@@ -3,6 +3,11 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.3.1 — 2026-11-03
+
+- Impostor `openpak-v1.10.9`: reports `game_sessions.among-us` to rewards (needs
+  `REWARDS_EVENTS_*` and `EOS_INTERNAL_*` on the unit; docs/deploy.md).
+
 ## v0.3.0 — 2026-11-02
 
 - Release from main; replaces the hand-built production image.
