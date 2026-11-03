@@ -3,6 +3,9 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.5.0 — 2026-11-03
+- Per-request logging: one slog line per HTTP request (method, path, status, ms) on stderr via internal/httplog. Query strings, headers and bodies are never logged; /healthz and /metrics are skipped.
+
 ## v0.4.0 — 2026-11-03
 
 - Impostor `openpak-v1.10.10`: rewards state persisted in Postgres. Set `IMPOSTOR_DATABASE_URL` on the

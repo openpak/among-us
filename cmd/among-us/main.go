@@ -22,6 +22,7 @@ import (
 	"os"
 	"strings"
 
+	"openpak/among-us/internal/httplog"
 	"openpak/among-us/redact"
 )
 
@@ -113,5 +114,5 @@ func main() {
 	// ponytail: bare http.Server, no timeouts, no graceful shutdown. This
 	// sits behind Traefik on a private port and is restarted by the container
 	// runtime. Add a configured http.Server if it ever faces anything else.
-	log.Fatal((&http.Server{Addr: addr, Handler: mux, ErrorLog: redact.ErrorLog()}).ListenAndServe())
+	log.Fatal((&http.Server{Addr: addr, Handler: httplog.Middleware(mux), ErrorLog: redact.ErrorLog()}).ListenAndServe())
 }
