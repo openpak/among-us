@@ -5,7 +5,7 @@
 # connections on Impostor's port + 3 and relays them to Impostor over loopback.
 # They share a container and nothing else: the front talks to Impostor over loopback, which is
 # mere aggregation, so the GPL work stays its own program.
-ARG IMPOSTOR_REF=openpak-v1.10.9
+ARG IMPOSTOR_REF=openpak-v1.10.10
 ARG HAZEL_REF=c6a228cc8dddb91cedecd790ddab338d56abec6c
 
 FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS front

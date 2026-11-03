@@ -48,7 +48,7 @@ jobs:
         with:
           context: .
           build-args: |
-            IMPOSTOR_REF=${{ vars.IMPOSTOR_REF || 'openpak-v1.10.9' }}
+            IMPOSTOR_REF=${{ vars.IMPOSTOR_REF || 'openpak-v1.10.10' }}
           secrets: |
             netrc=machine github.com login x-access-token password ${{ secrets.OPENPAK_MODULE_TOKEN }}
           platforms: linux/${{ matrix.arch }}

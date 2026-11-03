@@ -3,6 +3,11 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.4.0 — 2026-11-03
+
+- Impostor `openpak-v1.10.10`: rewards state persisted in Postgres. Set `IMPOSTOR_DATABASE_URL` on the
+  unit (docs/deploy.md).
+
 ## v0.3.2 — 2026-11-03
 
 - Release workflow IMPOSTOR_REF fallback now openpak-v1.10.9 (v0.3.1 still built 1.10.8). Impostor reports `game_sessions.among-us` to rewards (needs
