@@ -45,3 +45,10 @@ Impostor in this image reports `game_sessions.among-us` to rewards (see the impo
 - `IMPOSTOR_DATABASE_URL`: Postgres for the session clock, PUID map and outbox (state survives restarts)
 
 The Go front sees no room membership and sends nothing. Unset: reporter idle.
+
+## Account erasure
+
+`DELETE /internal/accounts/{account_id}/data` on the front (`:22600`), `Authorization: Bearer $ACCOUNT_ERASE_KEY`
+(unset: 503). The front keeps no per-account data (room code -> node table, no player ids; the routing account cache
+is never filled), so it answers `{"service":"among-us","rows":0}` and logs `account erased`. Impostor, which runs in the
+same image, has its own erase (see the impostor repo).

@@ -3,6 +3,13 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.0 - 2026-11-04
+
+**Account erasure endpoint (openpak/prds#120), a no-op.** `DELETE /internal/accounts/{account_id}/data` with
+`Authorization: Bearer $ACCOUNT_ERASE_KEY` (unset: 503) answers `{"service":"among-us","rows":0}`. The front holds no
+per-account data: its only state is the room code -> region node table (no player ids) and a routing cache that no
+code path fills. The player data lives in Impostor (its own repo/endpoint).
+
 ## v0.5.1 — 2026-11-03
 
 - Impostor `openpak-v1.10.11`: one log line per HTTP request (`http <method> <path> -> <status> <ms>ms`) and

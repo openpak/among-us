@@ -57,6 +57,7 @@ func env(key, fallback string) string {
 // proxies everything it does not answer, so a nil rt or a table without nodes is the plain proxy.
 func front(proxy http.Handler, rt *router) *http.ServeMux {
 	mux := http.NewServeMux()
+	mux.HandleFunc("DELETE /internal/accounts/{account_id}/data", eraseHandler("among-us"))
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok\n"))
 	})
