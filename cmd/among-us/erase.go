@@ -2,17 +2,21 @@ package main
 
 // Account erasure (openpak/prds#120): DELETE /internal/accounts/{account_id}/data with
 // `Authorization: Bearer <ACCOUNT_ERASE_KEY>`. The front holds no per-account data (see docs/deploy.md): its only state is a room code -> region node table and an unused routing cache.
-// The endpoint is a logged no-op that answers rows=0, so the website finaliser has a step to call
-// and a missing service stays visible. Unset ACCOUNT_ERASE_KEY: 503 (never open).
+// The player data lives in Impostor, which listens on loopback only, so this endpoint is the
+// container's one door: it forwards the same call to Impostor (IMPOSTOR_ERASE_URL, default
+// http://127.0.0.1:22601) and answers with Impostor's row count. Unset ACCOUNT_ERASE_KEY: 503 (never open).
 
 import (
 	"crypto/subtle"
 	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var uuidRe = regexp.MustCompile(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`)
@@ -40,7 +44,40 @@ func eraseHandler(service string) http.HandlerFunc {
 			reply(http.StatusBadRequest, map[string]any{"error": "account_id must be a UUID"})
 			return
 		}
-		log.Printf("account erased account=%s rows=%d service=%s", strings.ToLower(id), 0, service)
-		reply(http.StatusOK, map[string]any{"service": service, "rows": 0})
+		rows, err := eraseImpostor(r, id, key)
+		if err != nil {
+			log.Printf("account erase failed account=%s service=%s: %v", strings.ToLower(id), service, err)
+			reply(http.StatusBadGateway, map[string]any{"error": "impostor erase failed"})
+			return
+		}
+		log.Printf("account erased account=%s rows=%d service=%s", strings.ToLower(id), rows, service)
+		reply(http.StatusOK, map[string]any{"service": service, "rows": rows})
 	}
+}
+
+// eraseImpostor forwards the erase to Impostor on loopback and returns its row count.
+func eraseImpostor(r *http.Request, id, key string) (int, error) {
+	base := os.Getenv("IMPOSTOR_ERASE_URL")
+	if base == "" {
+		base = "http://127.0.0.1:22601"
+	}
+	req, err := http.NewRequestWithContext(r.Context(), http.MethodDelete, strings.TrimRight(base, "/")+"/internal/accounts/"+id+"/data", nil)
+	if err != nil {
+		return 0, err
+	}
+	req.Header.Set("Authorization", "Bearer "+key)
+	resp, err := (&http.Client{Timeout: 30 * time.Second}).Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(io.LimitReader(resp.Body, 4096))
+	if resp.StatusCode/100 != 2 {
+		return 0, fmt.Errorf("impostor answered %s", resp.Status)
+	}
+	var out struct {
+		Rows int `json:"rows"`
+	}
+	_ = json.Unmarshal(body, &out)
+	return out.Rows, nil
 }

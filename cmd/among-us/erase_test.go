@@ -6,7 +6,39 @@ import (
 	"testing"
 )
 
+func TestEraseForwardsToImpostor(t *testing.T) {
+	var gotAuth, gotPath string
+	imp := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotAuth, gotPath = r.Header.Get("Authorization"), r.URL.Path
+		w.Write([]byte(`{"service":"impostor","rows":3}`))
+	}))
+	defer imp.Close()
+	t.Setenv("IMPOSTOR_ERASE_URL", imp.URL)
+	t.Setenv("ACCOUNT_ERASE_KEY", "k")
+	r := httptest.NewRequest("DELETE", "/internal/accounts/11111111-1111-1111-1111-111111111111/data", nil)
+	r.Header.Set("Authorization", "Bearer k")
+	r.SetPathValue("account_id", "11111111-1111-1111-1111-111111111111")
+	w := httptest.NewRecorder()
+	eraseHandler("among-us")(w, r)
+	if w.Code != 200 || w.Body.String() != "{\"rows\":3,\"service\":\"among-us\"}\n" {
+		t.Fatalf("%d %q", w.Code, w.Body.String())
+	}
+	if gotAuth != "Bearer k" || gotPath != "/internal/accounts/11111111-1111-1111-1111-111111111111/data" {
+		t.Fatalf("forwarded %q %q", gotAuth, gotPath)
+	}
+	imp.Close()
+	w = httptest.NewRecorder()
+	eraseHandler("among-us")(w, r)
+	if w.Code != http.StatusBadGateway {
+		t.Fatalf("down impostor must fail the step, got %d", w.Code)
+	}
+}
+
 func TestEraseNoOpEndpoint(t *testing.T) {
+	// no Impostor to forward to in this test: a stub answers rows=0
+	imp := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.Write([]byte(`{"rows":0}`)) }))
+	defer imp.Close()
+	t.Setenv("IMPOSTOR_ERASE_URL", imp.URL)
 	const id = "11111111-1111-1111-1111-111111111111"
 	call := func(env, hdr, acct string) (int, string) {
 		t.Setenv("ACCOUNT_ERASE_KEY", env)

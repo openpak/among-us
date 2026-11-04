@@ -3,6 +3,10 @@
 Generated from git history on 2026-09-15. `git log` stays the source
 of truth; this file is the readable summary.
 
+## v0.6.1 - 2026-11-04
+
+- The erase endpoint forwards to Impostor (`openpak-v1.10.12`, which erases its rewards state, PUID map and outbox) on loopback, `IMPOSTOR_ERASE_URL` default `http://127.0.0.1:22601`, and answers with its row count; Impostor down = 502 so the step is retried. Impostor listens on loopback only, so this is the container's one door.
+
 ## v0.6.0 - 2026-11-04
 
 **Account erasure endpoint (openpak/prds#120), a no-op.** `DELETE /internal/accounts/{account_id}/data` with
